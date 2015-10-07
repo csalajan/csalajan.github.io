@@ -2,10 +2,20 @@
  * Created by csalajan on 10/7/2015.
  */
 var Game = function(canvas) {
-    this.canvas = this.SetupCanvas(canvas);
+    //this.canvas = this.SetupCanvas(canvas);
+    this.canvas= document.getElementById(canvas);
     this.context = this.canvas.getContext('2d');
 
     this.pcEngine = new PCEngine(this);
+
+    var params = {
+        width: "50",
+        height: "50",
+        turn: ".2",
+        branch: "1",
+        reconnect: "0",
+        deadEnd: "0"
+    };
 
 
     this.bodies = [];
@@ -18,7 +28,7 @@ var Game = function(canvas) {
 
     tick();
 
-    this.pcEngine.GenerateStuff();
+    this.pcEngine.MazeGenerator(params);
 
 };
 

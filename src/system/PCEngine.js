@@ -10,3 +10,9 @@ PCEngine.prototype.GenerateStuff = function() {
         this.game.bodies.push(new Block());
     }.bind(this), 1000)
 };
+
+PCEngine.prototype.MazeGenerator = function(params) {
+    var maze = new Maze(params);
+    maze.Build();
+    this.game.bodies.push(maze);
+};
