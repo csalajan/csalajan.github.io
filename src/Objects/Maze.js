@@ -168,6 +168,10 @@ Maze.prototype.Update = function() {
 
 };
 
+Maze.prototype.Clear = function() {
+
+}
+
 Maze.prototype.Draw = function(context) {
     for (var x = 0; x < this.params.width; x++) {
         for (var y = 0; y < this.params.height; y++) {

@@ -50,6 +50,6 @@ Player.prototype.Clear = function(context) {
 
 Player.prototype.CheckCollision = function(center) {
     var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
-    return pixels.data.indexOf(191) == -1 && pixels.data.indexOf(127) == -1;
+    return pixels.data.indexOf(191) == -1 && pixels.data.indexOf(127) == -1 && pixels.data.indexOf(128) == -1;
 };
 
