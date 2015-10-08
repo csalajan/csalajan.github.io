@@ -14,5 +14,6 @@ PCEngine.prototype.GenerateStuff = function() {
 PCEngine.prototype.MazeGenerator = function(params) {
     var maze = new Maze(params);
     maze.Build();
-    this.game.bodies.push(maze);
+    maze.Draw(this.game.context);
+    //this.game.bodies.push(maze);
 };

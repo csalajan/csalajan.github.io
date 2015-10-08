@@ -29,6 +29,7 @@ var Game = function(canvas) {
     tick();
 
     this.pcEngine.MazeGenerator(params);
+    this.bodies.push(new Player(this));
 
 };
 
@@ -80,12 +81,13 @@ Game.prototype.Convert =  {
 
 Game.prototype.Update = function() {
     this.bodies.forEach(function(body) {
+        body.Clear(this.context);
         body.Update();
-    });
+    }.bind(this));
 };
 
 Game.prototype.Draw = function() {
-    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    //this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.bodies.forEach(function(body) {
         body.Draw(this.context);
     }.bind(this));
