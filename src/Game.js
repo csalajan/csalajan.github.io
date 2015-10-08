@@ -7,6 +7,7 @@ var Game = function(canvas) {
     this.context = this.canvas.getContext('2d');
 
     this.Level = new Level();
+    this.Timer = new Timer();
 
     this.bodies = [];
 

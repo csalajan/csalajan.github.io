@@ -24,6 +24,7 @@ Level.prototype.Start = function(game) {
 
     game.bodies.push(new Player(game));
     game.bodies.push(new Exit(game));
+    game.Timer.Start();
 };
 
 
