@@ -15,7 +15,7 @@ var Game = function(canvas) {
         branch: 1,
         reconnect:0,
         deadEnd: 0,
-        scale: 15
+        scale: 16
     };
 
 
@@ -30,9 +30,9 @@ var Game = function(canvas) {
     tick();
 
     this.pcEngine.MazeGenerator(params);
-    var player = new Player(this);
-    this.bodies.push(player);
-    this.bodies.push(camera);
+
+    this.bodies.push(new Player(this));
+    this.bodies.push(new Exit(this));
 
 };
 
@@ -94,5 +94,9 @@ Game.prototype.Draw = function() {
     this.bodies.forEach(function(body) {
         body.Draw(this.context);
     }.bind(this));
+};
+
+Game.prototype.Win = function() {
+    alert('You Win!');
 };
 
