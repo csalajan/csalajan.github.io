@@ -1,0 +1,8 @@
+#gameArea {
+    width: 100%;
+}
+
+#gameArea #Game {
+    display: block;
+    margin: 0 auto;
+}
