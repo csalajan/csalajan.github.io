@@ -9,12 +9,13 @@ var Game = function(canvas) {
     this.pcEngine = new PCEngine(this);
 
     var params = {
-        width: "50",
-        height: "50",
-        turn: ".2",
-        branch: "1",
-        reconnect: "0",
-        deadEnd: "0"
+        width: 50,
+        height: 50,
+        turn: .2,
+        branch: 1,
+        reconnect: 0,
+        deadEnd: 0,
+        scale: 45
     };
 
 

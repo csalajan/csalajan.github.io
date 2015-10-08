@@ -171,10 +171,10 @@ Maze.prototype.Update = function() {
 Maze.prototype.Draw = function(context) {
     for (var x = 0; x < this.params.width; x++) {
         for (var y = 0; y < this.params.height; y++) {
-            var top = y*15;
-            var bottom = y*15 + 15;
-            var left = x *15;
-            var right = x * 15 + 15;
+            var top = y*this.params.scale;
+            var bottom = y*this.params.scale + this.params.scale;
+            var left = x *this.params.scale;
+            var right = x * this.params.scale + this.params.scale;
 
             if (!this.data[x][y].visited) {
                 context.fillRect(left, top, 10, 10);
