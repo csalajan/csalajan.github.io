@@ -14,8 +14,8 @@ var Keyboarder = function() {
     }
 
     this.KEYS = {
-        UP: 40,
-        DOWN: 38,
+        UP: 38,
+        DOWN: 40,
         LEFT: 37,
         RIGHT: 39
     }
