@@ -1,0 +1,5 @@
+var Scene = {
+    Start: function() {
+
+    }
+};

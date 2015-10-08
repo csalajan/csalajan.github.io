@@ -2,7 +2,9 @@
     width: 100%;
 }
 
-#gameArea #Game {
+#gameArea canvas {
+    position: absolute;
+    left: 50%;
     display: block;
-    margin: 0 auto;
+    margin-left: -400px;
 }

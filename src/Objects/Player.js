@@ -35,7 +35,8 @@ Player.prototype.Update = function() {
 
     if (this.CheckCollision(newCenter)) {
         this.center = newCenter;
-    };
+        this.game.fogOfWar.Reveal(this.center);
+    }
 };
 
 Player.prototype.Draw = function(context) {

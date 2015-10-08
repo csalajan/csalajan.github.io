@@ -6,18 +6,7 @@ var Game = function(canvas) {
     this.canvas= document.getElementById(canvas);
     this.context = this.canvas.getContext('2d');
 
-    this.pcEngine = new PCEngine(this);
-
-    var params = {
-        width: 50,
-        height: 50,
-        turn: .2,
-        branch: 1,
-        reconnect:0,
-        deadEnd: 0,
-        scale: 16
-    };
-
+    this.Level = new Level();
 
     this.bodies = [];
 
@@ -28,12 +17,7 @@ var Game = function(canvas) {
     }.bind(this);
 
     tick();
-
-    this.pcEngine.MazeGenerator(params);
-
-    this.bodies.push(new Player(this));
-    this.bodies.push(new Exit(this));
-
+    this.StartMaze();
 };
 
 Game.prototype.SetupCanvas = function(canvas) {
@@ -41,9 +25,6 @@ Game.prototype.SetupCanvas = function(canvas) {
     var widthToHeight = 1;
     var newWidth = window.innerWidth;
     var newHeight = window.innerHeight;
-    console.log(newWidth);
-    console.log(newHeight);
-
 
     var newWidthToHeight = newWidth / newHeight;
 
@@ -80,6 +61,19 @@ Game.prototype.Convert =  {
     canvasYToGameY: function() {
         return y*gameCanvas.height/game.gameHeight;
     }
+};
+
+Game.prototype.ClearScreen = function() {
+    this.bodies = [];
+    this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+};
+
+Game.prototype.StartMaze = function() {
+  this.Level.Start(this);
+};
+
+Game.prototype.MainMenu = function() {
+
 };
 
 Game.prototype.Update = function() {
