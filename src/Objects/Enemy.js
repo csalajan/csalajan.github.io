@@ -1,6 +1,6 @@
 var Enemy = function(game) {
     this.game = game;
-    this.color = "#0000FF";
+    this.color = "#0022CC";
     this.facing = 'right';
     this.directions = {
         0: 'right',
