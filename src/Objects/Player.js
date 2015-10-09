@@ -1,5 +1,6 @@
 var Player = function(game) {
     this.game = game;
+    this.color = "#FF0000";
 
     this.center = {
         x: 5,
@@ -16,6 +17,7 @@ var Player = function(game) {
     this.keyboarder = new Keyboarder();
 };
 
+//Player.prototype = GameObject;
 
 Player.prototype.Update = function() {
     var newCenter = {
@@ -40,9 +42,8 @@ Player.prototype.Update = function() {
 };
 
 Player.prototype.Draw = function(context) {
-    context.fillStyle = "#FF0000";
+    context.fillStyle = this.color;
     context.fillRect(this.center.x - this.size.x / 2, this.center.y - this.size.y / 2, this.size.x, this.size.y);
-
 };
 
 Player.prototype.Clear = function(context) {
