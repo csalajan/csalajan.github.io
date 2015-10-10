@@ -9,6 +9,8 @@ var Level = function() {
         scale: 16,
         enemies: 10
     };
+
+    this.grid = [];
 };
 
 Level.prototype = Scene;
@@ -18,7 +20,7 @@ Level.prototype.Start = function(game) {
 
     var maze = new Maze(this.params);
     maze.Build();
-    maze.Draw(game.context);
+    maze.Draw(game.context, this);
 
     game.fogOfWar = new FogOfWar(game);
     game.fogOfWar.Init();

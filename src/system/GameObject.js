@@ -15,6 +15,7 @@ var GameObject = {
         128: 'wall',
         573: 'wall',
         369: 'wall',
+        254: 'wall',
         493: 'enemy',
         382: 'bullet'
     },

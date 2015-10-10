@@ -14,7 +14,7 @@ Maze.prototype.Build = function() {
     for (var x = 0; x < this.params.width; x++) {
         this.data[x] = [];
         for (var y = 0; y < this.params.height; y++) {
-            this.data[x][y] = new Wall(this.params);
+            this.data[x][y] = new Wall(this.params, x, y);
         }
     }
 
@@ -159,43 +159,13 @@ Maze.prototype.MazeInBounds = function(x, y) {
     return !(x < 0 || x >= this.params.width || y < 0 || y >= this.params.height);
 };
 
-Maze.prototype.Update = function() {
-
-};
-
-Maze.prototype.Clear = function() {
-
-}
-
-Maze.prototype.Draw = function(context) {
+Maze.prototype.Draw = function(context, level) {
     for (var x = 0; x < this.params.width; x++) {
         for (var y = 0; y < this.params.height; y++) {
-            var top = y*this.params.scale;
-            var bottom = y*this.params.scale + this.params.scale;
-            var left = x *this.params.scale;
-            var right = x * this.params.scale + this.params.scale;
-
-            if (!this.data[x][y].visited) {
-                context.fillRect(left, top, 10, 10);
-            } else {
-                if (!this.data[x][y].up) {
-                    context.moveTo(left, top);
-                    context.lineTo(right, top);
-                }
-                if (!this.data[x][y].down) {
-                    context.moveTo(left, bottom);
-                    context.lineTo(right, bottom);
-                }
-                if (!this.data[x][y].left) {
-                    context.moveTo(left, top);
-                    context.lineTo(left, bottom);
-                }
-                if (!this.data[x][y].right) {
-                    context.moveTo(right, top);
-                    context.lineTo(right, bottom);
-                }
-            }
+            //game.bodies.push(this.data[x][y]); //
+            this.data[x][y].Draw(context);
+            level.grid.push(this.data[x][y]);
         }
     }
-    context.stroke();
+    //context.stroke();
 };
