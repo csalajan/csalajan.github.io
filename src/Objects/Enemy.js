@@ -2,6 +2,14 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
+    this.collisions = {
+        255: 'win',
+        191: 'wall',
+        127: 'wall',
+        128: 'wall',
+        493: 'enemy',
+        382: 'bullet'
+    };
     this.directions = {
         0: 'right',
         1: 'up',
@@ -63,8 +71,27 @@ Enemy.prototype.Update = function() {
 
 Enemy.prototype.CheckCollision = function(center) {
     var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
+    var value = this.Pixels(pixels.data);
+    if (value != 0) {
+        this.Collide(this.collisions[value]);
+        return false;
+    }
+    return true;
+};
 
-    return pixels.data.indexOf(191) == -1 && pixels.data.indexOf(127) == -1 && pixels.data.indexOf(128) == -1;
+Enemy.prototype.Pixels = function(data) {
+    var seen = {};
+    var filtered = data.filter(function(item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    }).filter(function(item) {
+        return item != 0;
+    });
+    if (filtered.length > 0) {
+        return filtered.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+    }
+    return filtered;
 };
 
 Enemy.prototype.Clear = function(context) {
@@ -79,4 +106,22 @@ Enemy.prototype.newDirection = function(currentDirection) {
     }
     return direction;
 
+};
+
+Enemy.prototype.Collide = function(item) {
+
+    switch(item) {
+        case 'wall':
+            // Do Nothing. Handled in Update
+            break;
+        case 'exit':
+            // Win Condition
+            break;
+        case 'enemy':
+            // Death
+            break;
+        case 'bullet':
+            this.game.Destroy(this);
+            break;
+    }
 };

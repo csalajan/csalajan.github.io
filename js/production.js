@@ -34,24 +34,36 @@ var GameObject = {
 
 var Keyboarder = function() {
     var keyState = {};
+    var fired = false;
 
     window.onkeydown = function(e) {
         keyState[e.keyCode] = true;
-    }
+    };
 
     window.onkeyup = function(e) {
         keyState[e.keyCode] = false
-    }
+        fired = false;
+    };
 
     this.isDown = function(keyCode) {
         return keyState[keyCode] === true;
-    }
+    };
+
+    this.isDownOnce = function(keyCode) {
+        if(keyState[keyCode] && !fired) {
+            fired = true;
+            return true;
+        }
+
+        return false;
+    };
 
     this.KEYS = {
         UP: 38,
         DOWN: 40,
         LEFT: 37,
-        RIGHT: 39
+        RIGHT: 39,
+        SPACE: 32
     }
 };
 /**
@@ -122,6 +134,64 @@ Block.prototype.Update = function() {
 
 Block.prototype.Draw = function(context) {
     context.fillRect(this.center.x - this.size.x /2, this.center.y - this.size.y / 2, this.size.x, this.size.y);
+};
+var Bullet = function(owner) {
+    this.game = owner.game;
+    this.direction = owner.facing;
+    this.center = owner.center;
+    this.velocity = 4;
+    this.color = "red";
+
+    switch (this.direction) {
+        case 'right':
+        case 'left':
+            this.size = {
+                x: 5,
+                y: 2
+            };
+            break;
+        case 'up':
+        case 'down':
+            this.size = {
+                x: 2,
+                y: 5
+            };
+    }
+
+    this.move = {
+        x: (this.direction == 'left') ? -this.velocity : (this.direction == 'right') ? this.velocity : 0,
+        y: (this.direction == 'up') ? -this.velocity : (this.direction == 'down') ? this.velocity : 0
+    }
+
+
+};
+
+Bullet.prototype.Update = function() {
+    var newCenter = {
+        x: this.center.x + this.move.x,
+        y: this.center.y + this.move.y
+    };
+
+    if (this.CheckCollision(newCenter)) {
+        this.center = newCenter;
+    } else {
+        this.game.Destroy(this);
+    }
+};
+
+Bullet.prototype.Draw = function(context) {
+    context.fillStyle = this.color;
+    context.fillRect(this.center.x - this.size.x / 2, this.center.y - this.size.y / 2, this.size.x, this.size.y);
+};
+
+Bullet.prototype.Clear = function(context) {
+    context.clearRect((this.center.x - this.size.x / 2) - 1, (this.center.y - this.size.y / 2) - 1, this.size.x + 2, this.size.y + 2)
+};
+
+Bullet.prototype.CheckCollision = function(center) {
+    var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
+
+    return pixels.data.indexOf(191) == -1 && pixels.data.indexOf(127) == -1 && pixels.data.indexOf(128) == -1;
 };
 var Camera = function(xView, yView, canvasWidth, canvasHeight, worldWidth, worldHeight) {
     this.xView = xView || 0;
@@ -221,6 +291,14 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
+    this.collisions = {
+        255: 'win',
+        191: 'wall',
+        127: 'wall',
+        128: 'wall',
+        493: 'enemy',
+        382: 'bullet'
+    };
     this.directions = {
         0: 'right',
         1: 'up',
@@ -282,8 +360,27 @@ Enemy.prototype.Update = function() {
 
 Enemy.prototype.CheckCollision = function(center) {
     var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
+    var value = this.Pixels(pixels.data);
+    if (value != 0) {
+        this.Collide(this.collisions[value]);
+        return false;
+    }
+    return true;
+};
 
-    return pixels.data.indexOf(191) == -1 && pixels.data.indexOf(127) == -1 && pixels.data.indexOf(128) == -1;
+Enemy.prototype.Pixels = function(data) {
+    var seen = {};
+    var filtered = data.filter(function(item) {
+        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
+    }).filter(function(item) {
+        return item != 0;
+    });
+    if (filtered.length > 0) {
+        return filtered.reduce(function(a, b) {
+            return a + b;
+        }, 0);
+    }
+    return filtered;
 };
 
 Enemy.prototype.Clear = function(context) {
@@ -298,6 +395,24 @@ Enemy.prototype.newDirection = function(currentDirection) {
     }
     return direction;
 
+};
+
+Enemy.prototype.Collide = function(item) {
+
+    switch(item) {
+        case 'wall':
+            // Do Nothing. Handled in Update
+            break;
+        case 'exit':
+            // Win Condition
+            break;
+        case 'enemy':
+            // Death
+            break;
+        case 'bullet':
+            this.game.Destroy(this);
+            break;
+    }
 };
 var Exit = function(game) {
     this.game = game;
@@ -527,6 +642,7 @@ Maze.prototype.Draw = function(context) {
 var Player = function(game) {
     this.game = game;
     this.color = "#FF0000";
+    this.facing = 'right';
 
     this.collisions = {
         255: 'win',
@@ -561,12 +677,20 @@ Player.prototype.Update = function() {
 
     if (this.keyboarder.isDown(this.keyboarder.KEYS.UP)) {
         newCenter.y = this.center.y - this.speed;
+        this.facing = 'up';
     } else if (this.keyboarder.isDown(this.keyboarder.KEYS.DOWN)) {
         newCenter.y = this.center.y + this.speed;
+        this.facing= 'down';
     } else if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
         newCenter.x = this.center.x - this.speed;
+        this.facing = 'left';
     } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
         newCenter.x = this.center.x + this.speed;
+        this.facing = 'right';
+    }
+
+    if (this.keyboarder.isDownOnce(this.keyboarder.KEYS.SPACE)) {
+        this.game.bodies.push(new Bullet(this));
     }
 
     if (this.CheckCollision(newCenter)) {
@@ -661,9 +785,9 @@ Level.prototype.Start = function(game) {
         game.bodies.push(new Enemy(game));
     }
 
-    setInterval(function() {
-        game.bodies.push(new Enemy(game));
-    }, 20000);
+    //setInterval(function() {
+    //    game.bodies.push(new Enemy(game));
+    //}, 20000);
 
     game.bodies.push(new Exit(game));
     game.Timer.Start();
@@ -772,5 +896,9 @@ Game.prototype.Draw = function() {
 
 Game.prototype.Win = function() {
     alert('You Win!');
+};
+
+Game.prototype.Destroy = function(object) {
+    this.bodies.splice(this.bodies.indexOf(object), 1);
 };
 

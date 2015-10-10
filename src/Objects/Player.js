@@ -1,6 +1,7 @@
 var Player = function(game) {
     this.game = game;
     this.color = "#FF0000";
+    this.facing = 'right';
 
     this.collisions = {
         255: 'win',
@@ -35,12 +36,20 @@ Player.prototype.Update = function() {
 
     if (this.keyboarder.isDown(this.keyboarder.KEYS.UP)) {
         newCenter.y = this.center.y - this.speed;
+        this.facing = 'up';
     } else if (this.keyboarder.isDown(this.keyboarder.KEYS.DOWN)) {
         newCenter.y = this.center.y + this.speed;
+        this.facing= 'down';
     } else if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
         newCenter.x = this.center.x - this.speed;
+        this.facing = 'left';
     } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
         newCenter.x = this.center.x + this.speed;
+        this.facing = 'right';
+    }
+
+    if (this.keyboarder.isDownOnce(this.keyboarder.KEYS.SPACE)) {
+        this.game.bodies.push(new Bullet(this));
     }
 
     if (this.CheckCollision(newCenter)) {

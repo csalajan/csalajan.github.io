@@ -5,7 +5,7 @@ var watch = require('gulp-watch');
 var livereload = require('gulp-livereload');
 var rename = require('gulp-rename');
 
-gulp.task('Default', ['Scripts']);
+gulp.task('default', ['Scripts']);
 
 gulp.task('Scripts', function() {
     gulp.src([

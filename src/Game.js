@@ -95,3 +95,7 @@ Game.prototype.Win = function() {
     alert('You Win!');
 };
 
+Game.prototype.Destroy = function(object) {
+    this.bodies.splice(this.bodies.indexOf(object), 1);
+};
+

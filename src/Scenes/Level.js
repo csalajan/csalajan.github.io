@@ -29,9 +29,9 @@ Level.prototype.Start = function(game) {
         game.bodies.push(new Enemy(game));
     }
 
-    setInterval(function() {
-        game.bodies.push(new Enemy(game));
-    }, 20000);
+    //setInterval(function() {
+    //    game.bodies.push(new Enemy(game));
+    //}, 20000);
 
     game.bodies.push(new Exit(game));
     game.Timer.Start();
