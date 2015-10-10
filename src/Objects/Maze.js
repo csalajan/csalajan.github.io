@@ -14,13 +14,7 @@ Maze.prototype.Build = function() {
     for (var x = 0; x < this.params.width; x++) {
         this.data[x] = [];
         for (var y = 0; y < this.params.height; y++) {
-            this.data[x][y] = {
-                visited: false,
-                up: false,
-                down: false,
-                left: false,
-                right: false
-            };
+            this.data[x][y] = new Wall(this.params);
         }
     }
 
@@ -29,6 +23,7 @@ Maze.prototype.Build = function() {
     var direction = this.dir[this.rand(4)];
 
     this.DoMaze(x, y, direction);
+
 };
 
 Maze.prototype.rand = function(max) {
