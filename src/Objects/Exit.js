@@ -14,4 +14,4 @@ var Exit = function(game) {
 
 };
 
-Exit.prototype = GameObject;
+Exit.prototype = Object.create(GameObject);

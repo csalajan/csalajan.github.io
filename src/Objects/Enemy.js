@@ -2,14 +2,7 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
-    this.collisions = {
-        255: 'win',
-        191: 'wall',
-        127: 'wall',
-        128: 'wall',
-        493: 'enemy',
-        382: 'bullet'
-    };
+
     this.directions = {
         0: 'right',
         1: 'up',
@@ -30,7 +23,7 @@ var Enemy = function(game) {
     this.SetStartLocation();
 };
 
-Enemy.prototype = GameObject;
+Enemy.prototype = Object.create(GameObject);
 
 Enemy.prototype.SetStartLocation = function() {
     var x = Math.random() * this.game.canvas.width;
@@ -67,35 +60,6 @@ Enemy.prototype.Update = function() {
     } else {
         this.facing = this.newDirection();
     }
-};
-
-Enemy.prototype.CheckCollision = function(center) {
-    var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
-    var value = this.Pixels(pixels.data);
-    if (value != 0) {
-        this.Collide(this.collisions[value]);
-        return false;
-    }
-    return true;
-};
-
-Enemy.prototype.Pixels = function(data) {
-    var seen = {};
-    var filtered = data.filter(function(item) {
-        return seen.hasOwnProperty(item) ? false : (seen[item] = true);
-    }).filter(function(item) {
-        return item != 0;
-    });
-    if (filtered.length > 0) {
-        return filtered.reduce(function(a, b) {
-            return a + b;
-        }, 0);
-    }
-    return filtered;
-};
-
-Enemy.prototype.Clear = function(context) {
-    context.clearRect(this.center.x - this.size.x / 2, this.center.y - this.size.y / 2, this.size.x, this.size.y)
 };
 
 Enemy.prototype.newDirection = function(currentDirection) {

@@ -2,7 +2,7 @@ var Bullet = function(owner) {
     this.game = owner.game;
     this.direction = owner.facing;
     this.center = owner.center;
-    this.velocity = 4;
+    this.velocity = 3;
     this.color = "red";
 
     switch (this.direction) {
@@ -29,6 +29,8 @@ var Bullet = function(owner) {
 
 };
 
+Bullet.prototype = Object.create(GameObject);
+
 Bullet.prototype.Update = function() {
     var newCenter = {
         x: this.center.x + this.move.x,
@@ -37,22 +39,25 @@ Bullet.prototype.Update = function() {
 
     if (this.CheckCollision(newCenter)) {
         this.center = newCenter;
-    } else {
-        this.game.Destroy(this);
     }
 };
 
-Bullet.prototype.Draw = function(context) {
-    context.fillStyle = this.color;
-    context.fillRect(this.center.x - this.size.x / 2, this.center.y - this.size.y / 2, this.size.x, this.size.y);
+Bullet.prototype.Collide = function(value, i) {
+    switch(value) {
+        case 'enemy':
+            if (this instanceof Enemy) {
+                return true;
+            }
+        case 'wall':
+            this.game.Destroy(this);
+            return false;
+            break;
+        default:
+            return true;
+    }
+
 };
 
-Bullet.prototype.Clear = function(context) {
-    context.clearRect((this.center.x - this.size.x / 2) - 1, (this.center.y - this.size.y / 2) - 1, this.size.x + 2, this.size.y + 2)
-};
-
-Bullet.prototype.CheckCollision = function(center) {
-    var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
-
-    return pixels.data.indexOf(191) == -1 && pixels.data.indexOf(127) == -1 && pixels.data.indexOf(128) == -1;
-};
+//Bullet.prototype.Clear = function(context) {
+//    context.clearRect((this.center.x - this.size.x / 2) - 1, (this.center.y - this.size.y / 2) - 1, this.size.x + 2, this.size.y + 2)
+//};
