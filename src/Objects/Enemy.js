@@ -2,7 +2,7 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
-
+    this.collisions[255] = 'bullet';
     this.directions = {
         0: 'right',
         1: 'up',
@@ -73,7 +73,6 @@ Enemy.prototype.newDirection = function(currentDirection) {
 };
 
 Enemy.prototype.Collide = function(item) {
-
     switch(item) {
         case 'wall':
             // Do Nothing. Handled in Update

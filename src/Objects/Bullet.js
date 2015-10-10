@@ -9,7 +9,7 @@ var Bullet = function(owner) {
         case 'right':
         case 'left':
             this.size = {
-                x: 5,
+                x: 4,
                 y: 2
             };
             break;
@@ -17,16 +17,14 @@ var Bullet = function(owner) {
         case 'down':
             this.size = {
                 x: 2,
-                y: 5
+                y: 4
             };
     }
 
     this.move = {
         x: (this.direction == 'left') ? -this.velocity : (this.direction == 'right') ? this.velocity : 0,
         y: (this.direction == 'up') ? -this.velocity : (this.direction == 'down') ? this.velocity : 0
-    }
-
-
+    };
 };
 
 Bullet.prototype = Object.create(GameObject);
@@ -42,7 +40,7 @@ Bullet.prototype.Update = function() {
     }
 };
 
-Bullet.prototype.Collide = function(value, i) {
+Bullet.prototype.Collide = function(value) {
     switch(value) {
         case 'enemy':
             if (this instanceof Enemy) {
@@ -57,7 +55,3 @@ Bullet.prototype.Collide = function(value, i) {
     }
 
 };
-
-//Bullet.prototype.Clear = function(context) {
-//    context.clearRect((this.center.x - this.size.x / 2) - 1, (this.center.y - this.size.y / 2) - 1, this.size.x + 2, this.size.y + 2)
-//};

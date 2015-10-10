@@ -10,7 +10,6 @@ var GameObject = {
         context.fillRect(this.center.x - this.size.x / 2, this.center.y - this.size.y / 2, this.size.x, this.size.y);
     },
     collisions: {
-        255: 'win',
         191: 'wall',
         127: 'wall',
         128: 'wall',
@@ -23,8 +22,7 @@ var GameObject = {
         var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
         var value = this.Pixels(pixels.data);
         if (value != 0) {
-            return this.Collide(this.collisions[value], value);
-            //return false;
+            return this.Collide(this.collisions[value]);
         }
         return true;
     },
@@ -43,7 +41,7 @@ var GameObject = {
 
         return filtered;
     },
-    Collide: function(value, i) {
+    Collide: function(value) {
 
     }
 };

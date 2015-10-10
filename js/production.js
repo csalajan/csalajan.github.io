@@ -31,7 +31,6 @@ var GameObject = {
         context.fillRect(this.center.x - this.size.x / 2, this.center.y - this.size.y / 2, this.size.x, this.size.y);
     },
     collisions: {
-        255: 'win',
         191: 'wall',
         127: 'wall',
         128: 'wall',
@@ -44,8 +43,7 @@ var GameObject = {
         var pixels = this.game.context.getImageData(center.x - this.size.x / 2, center.y - this.size.y / 2, this.size.x, this.size.y);
         var value = this.Pixels(pixels.data);
         if (value != 0) {
-            return this.Collide(this.collisions[value], value);
-            //return false;
+            return this.Collide(this.collisions[value]);
         }
         return true;
     },
@@ -64,7 +62,7 @@ var GameObject = {
 
         return filtered;
     },
-    Collide: function(value, i) {
+    Collide: function(value) {
 
     }
 };
@@ -183,7 +181,7 @@ var Bullet = function(owner) {
         case 'right':
         case 'left':
             this.size = {
-                x: 5,
+                x: 4,
                 y: 2
             };
             break;
@@ -191,16 +189,14 @@ var Bullet = function(owner) {
         case 'down':
             this.size = {
                 x: 2,
-                y: 5
+                y: 4
             };
     }
 
     this.move = {
         x: (this.direction == 'left') ? -this.velocity : (this.direction == 'right') ? this.velocity : 0,
         y: (this.direction == 'up') ? -this.velocity : (this.direction == 'down') ? this.velocity : 0
-    }
-
-
+    };
 };
 
 Bullet.prototype = Object.create(GameObject);
@@ -216,7 +212,7 @@ Bullet.prototype.Update = function() {
     }
 };
 
-Bullet.prototype.Collide = function(value, i) {
+Bullet.prototype.Collide = function(value) {
     switch(value) {
         case 'enemy':
             if (this instanceof Enemy) {
@@ -231,10 +227,6 @@ Bullet.prototype.Collide = function(value, i) {
     }
 
 };
-
-//Bullet.prototype.Clear = function(context) {
-//    context.clearRect((this.center.x - this.size.x / 2) - 1, (this.center.y - this.size.y / 2) - 1, this.size.x + 2, this.size.y + 2)
-//};
 
 var Camera = function(xView, yView, canvasWidth, canvasHeight, worldWidth, worldHeight) {
     this.xView = xView || 0;
@@ -334,7 +326,7 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
-
+    this.collisions[255] = 'bullet';
     this.directions = {
         0: 'right',
         1: 'up',
@@ -405,7 +397,6 @@ Enemy.prototype.newDirection = function(currentDirection) {
 };
 
 Enemy.prototype.Collide = function(item) {
-
     switch(item) {
         case 'wall':
             // Do Nothing. Handled in Update
