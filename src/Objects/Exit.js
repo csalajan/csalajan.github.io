@@ -15,3 +15,7 @@ var Exit = function(game) {
 };
 
 Exit.prototype = Object.create(GameObject);
+
+Exit.prototype.Update = function() {
+    this.game.fogOfWar.Reveal(this.center);
+}

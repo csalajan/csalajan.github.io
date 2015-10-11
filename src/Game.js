@@ -8,7 +8,7 @@ var Game = function(canvas) {
 
     this.Level = new Level();
     this.Timer = new Timer();
-
+    this.fogOfWar = new FogOfWar(this);
     this.bodies = [];
 
     var tick = function() {
@@ -78,6 +78,7 @@ Game.prototype.MainMenu = function() {
 };
 
 Game.prototype.Update = function() {
+    this.fogOfWar.Init();
     this.bodies.forEach(function(body) {
         body.Clear(this.context);
         body.Update();

@@ -16,8 +16,8 @@ var Enemy = function(game) {
     };
 
     this.size = {
-        x: 6,
-        y: 6
+        x: 14,
+        y: 14
     };
 
     this.SetStartLocation();
@@ -59,6 +59,10 @@ Enemy.prototype.Update = function() {
         this.center = newCenter;
     } else {
         this.facing = this.newDirection();
+    }
+
+    if (Math.floor(Math.random() * 100) == 5) {
+        this.game.bodies.push(new Bullet(this));
     }
 };
 

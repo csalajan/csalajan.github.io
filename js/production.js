@@ -4,17 +4,19 @@ var FogOfWar = function(game) {
     this.fogContext = this.fogCanvas.getContext('2d');
     this.canvasWidth = game.canvas.width;
     this.canvasHeight = game.canvas.height;
-    this.radius = 25;
+    this.radius = 50;
 
 };
 
 FogOfWar.prototype.Init = function () {
-    this.fogContext = this.fogCanvas.getContext("2d"), this.fogContext.fillStyle = "rgba(0,0,0,1)", this.fogContext.fillRect(0, 0, this.canvasWidth, this.canvasHeight)
+    this.fogContext = this.fogCanvas.getContext("2d");
+    this.fogContext.fillStyle = "rgba(0,0,0,1)";
+    this.fogContext.fillRect(0, 0, this.canvasWidth, this.canvasHeight);
 };
 
 
 FogOfWar.prototype.Reveal = function(position) {
-    this.Init();
+
     this.fogContext.clearRect(position.x - this.radius, position.y - this.radius, this.radius*2, this.radius*2);
 };
 
@@ -176,7 +178,11 @@ var Bullet = function(owner) {
     this.direction = owner.facing;
     this.center = owner.center;
     this.velocity = 3;
-    this.color = "red";
+    if (owner instanceof Player) {
+        this.color = "red";
+    } else {
+        this.color = "#0022CC";
+    }
 
     switch (this.direction) {
         case 'right':
@@ -341,8 +347,8 @@ var Enemy = function(game) {
     };
 
     this.size = {
-        x: 6,
-        y: 6
+        x: 14,
+        y: 14
     };
 
     this.SetStartLocation();
@@ -384,6 +390,10 @@ Enemy.prototype.Update = function() {
         this.center = newCenter;
     } else {
         this.facing = this.newDirection();
+    }
+
+    if (Math.floor(Math.random() * 100) == 5) {
+        this.game.bodies.push(new Bullet(this));
     }
 };
 
@@ -430,6 +440,10 @@ var Exit = function(game) {
 };
 
 Exit.prototype = Object.create(GameObject);
+
+Exit.prototype.Update = function() {
+    this.game.fogOfWar.Reveal(this.center);
+}
 
 /**
  * Created by Craig on 10/7/2015.
@@ -651,8 +665,9 @@ Player.prototype.Update = function() {
 
     if (this.CheckCollision(newCenter)) {
         this.center = newCenter;
-        this.game.fogOfWar.Reveal(this.center);
     }
+
+    this.game.fogOfWar.Reveal(this.center);
 };
 
 Player.prototype.Collide = function(item) {
@@ -743,7 +758,6 @@ Level.prototype.Start = function(game) {
     maze.Build();
     maze.Draw(game.context, this);
 
-    game.fogOfWar = new FogOfWar(game);
     game.fogOfWar.Init();
 
     game.bodies.push(new Player(game));
@@ -778,7 +792,7 @@ var Game = function(canvas) {
 
     this.Level = new Level();
     this.Timer = new Timer();
-
+    this.fogOfWar = new FogOfWar(this);
     this.bodies = [];
 
     var tick = function() {
@@ -848,6 +862,7 @@ Game.prototype.MainMenu = function() {
 };
 
 Game.prototype.Update = function() {
+    this.fogOfWar.Init();
     this.bodies.forEach(function(body) {
         body.Clear(this.context);
         body.Update();

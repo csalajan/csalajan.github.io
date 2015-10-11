@@ -22,7 +22,6 @@ Level.prototype.Start = function(game) {
     maze.Build();
     maze.Draw(game.context, this);
 
-    game.fogOfWar = new FogOfWar(game);
     game.fogOfWar.Init();
 
     game.bodies.push(new Player(game));

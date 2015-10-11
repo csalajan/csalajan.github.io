@@ -3,7 +3,11 @@ var Bullet = function(owner) {
     this.direction = owner.facing;
     this.center = owner.center;
     this.velocity = 3;
-    this.color = "red";
+    if (owner instanceof Player) {
+        this.color = "red";
+    } else {
+        this.color = "#0022CC";
+    }
 
     switch (this.direction) {
         case 'right':
