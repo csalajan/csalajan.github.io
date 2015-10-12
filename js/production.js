@@ -96,6 +96,11 @@ var GameObject = {
     },
     Collide: function(value) {
 
+    },
+    GridPos: function() {
+        var x = Math.floor(this.center.x / (this.game.Level.params.width * this.game.Level.params.scale) * this.game.Level.params.width);
+        var y = Math.floor(this.center.y / (this.game.Level.params.height * this.game.Level.params.scale) * this.game.Level.params.height);
+        return this.game.Level.grid.Get(x, y);
     }
 };
 
@@ -652,6 +657,8 @@ var Player = function(game) {
     this.game = game;
     this.color = "#FF0000";
     this.facing = 'right';
+    this.elex = document.getElementById('x');
+    this.eley = document.getElementById('y');
 
     this.center = {
         x: 5,
@@ -666,9 +673,19 @@ var Player = function(game) {
     this.speed = 2;
 
     this.keyboarder = new Keyboarder();
+
+    setInterval(function() {
+        this.PrintPosition();
+    }.bind(this), 1000);
 };
 
 Player.prototype = Object.create(GameObject);
+
+Player.prototype.PrintPosition = function() {
+    var wall = this.GridPos();
+    this.elex.innerHTML = wall.grid.x;
+    this.eley.innerHTML = wall.grid.y;
+};
 
 Player.prototype.Update = function() {
     var newCenter = {

@@ -44,5 +44,10 @@ var GameObject = {
     },
     Collide: function(value) {
 
+    },
+    GridPos: function() {
+        var x = Math.floor(this.center.x / (this.game.Level.params.width * this.game.Level.params.scale) * this.game.Level.params.width);
+        var y = Math.floor(this.center.y / (this.game.Level.params.height * this.game.Level.params.scale) * this.game.Level.params.height);
+        return this.game.Level.grid.Get(x, y);
     }
 };

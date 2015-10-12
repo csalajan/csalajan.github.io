@@ -9,13 +9,21 @@
     margin-left: -400px;
 }
 
-#Timer {
+.stats {
     position: absolute;
     left: 50%;
     margin-left: 500px;
     font-size: 20px;
     width: 200px;
     height: 100px;
+}
+
+#x {
+    top: 30px;
+}
+
+#y {
+    top: 60px;
 }
 
 #FogOfWar {
