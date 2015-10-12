@@ -39,27 +39,46 @@ Enemy.prototype.Update = function() {
         x: this.center.x,
         y: this.center.y
     };
-
-    switch (this.facing) {
+    var grid = this.GridPos();
+    switch (this.facing) {    
         case 'right':
-            newCenter.x += 1;
+            if(grid.right){
+                newCenter.x += 16;
+            }
+            else
+                this.facing = this.newDirection();
             break;
         case 'up':
-            newCenter.y -= 1;
+            if(grid.up){
+                newCenter.y -= 16;
+            }
+            else
+                this.facing = this.newDirection();
             break;
         case 'left':
-            newCenter.x -=1;
+            if(grid.left){
+                newCenter.x -=16;
+            }
+            else
+                this.facing = this.newDirection();
             break;
         case 'down':
-            newCenter.y +=1;
+            if(grid.down){
+                newCenter.y +=16;
+            }
+            else
+                this.facing = this.newDirection();    
             break;
     }
-
-    if (this.CheckCollision(newCenter)) {
+    this.center = newCenter;
+    /*
+    if (this.game.Timer.Delta() > 50 && this.CheckCollision(newCenter)) {
         this.center = newCenter;
-    } else {
+        this.game.Timer.Last();
+    } else if(this.CheckCollision(newCenter)){
         this.facing = this.newDirection();
     }
+    */
 
     if (Math.floor(Math.random() * 100) == 5) {
         this.game.bodies.push(new Bullet(this));

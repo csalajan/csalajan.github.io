@@ -16,10 +16,10 @@ gulp.task('Scripts', function() {
         './src/Game.js'
         ])
         .pipe(concat('production.js'))
-        .pipe(gulp.dest('./js/'))
-        .pipe(rename('production.min.js'))
-        .pipe(uglify())
         .pipe(gulp.dest('./js/'));
+        //.pipe(rename('production.min.js'))
+        //.pipe(uglify())
+        //.pipe(gulp.dest('./js/'));
 });
 
 gulp.task('Watch', function() {
