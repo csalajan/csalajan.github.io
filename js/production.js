@@ -178,6 +178,7 @@ var Bullet = function(owner) {
     this.direction = owner.facing;
     this.center = owner.center;
     this.velocity = 3;
+    this.collisions[255] = 'wall';
     if (owner instanceof Player) {
         this.color = "red";
     } else {
@@ -222,7 +223,7 @@ Bullet.prototype.Update = function() {
 Bullet.prototype.Collide = function(value) {
     switch(value) {
         case 'enemy':
-            if (this instanceof Enemy) {
+            if (this.owner instanceof Enemy) {
                 return true;
             }
         case 'wall':
@@ -333,7 +334,7 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
-    this.collisions[255] = 'bullet';
+    //this.collisions[255] = 'bullet';
     this.directions = {
         0: 'right',
         1: 'up',
@@ -419,6 +420,7 @@ Enemy.prototype.Collide = function(item) {
             // Death
             break;
         case 'bullet':
+
             this.game.Destroy(this);
             break;
     }

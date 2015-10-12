@@ -3,6 +3,7 @@ var Bullet = function(owner) {
     this.direction = owner.facing;
     this.center = owner.center;
     this.velocity = 3;
+    this.collisions[255] = 'wall';
     if (owner instanceof Player) {
         this.color = "red";
     } else {
@@ -47,7 +48,7 @@ Bullet.prototype.Update = function() {
 Bullet.prototype.Collide = function(value) {
     switch(value) {
         case 'enemy':
-            if (this instanceof Enemy) {
+            if (this.owner instanceof Enemy) {
                 return true;
             }
         case 'wall':

@@ -2,7 +2,7 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
-    this.collisions[255] = 'bullet';
+    //this.collisions[255] = 'bullet';
     this.directions = {
         0: 'right',
         1: 'up',
@@ -88,6 +88,7 @@ Enemy.prototype.Collide = function(item) {
             // Death
             break;
         case 'bullet':
+
             this.game.Destroy(this);
             break;
     }
