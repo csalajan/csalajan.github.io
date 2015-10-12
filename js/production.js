@@ -1,3 +1,32 @@
+var HashTable = function() {
+    this.type = "HashTable";
+    this.table = new Array();
+};
+
+HashTable.prototype.BetterHash = function(data) {
+    const H = 37;
+    var total = 0;
+    for (var i = 0; i < data.length; ++i) {
+        total += H * total + data.charCodeAt(i);
+    }
+
+    hash = total % this.table.length;
+    if (hash < 0) {
+        hash += this.table.length - 1;
+    }
+
+    return parseInt(hash);
+};
+
+HashTable.prototype.Put = function(data) {
+    var pos = data.grid.x * Math.pow(2, 6) + data.grid.y;
+    this.table[pos] = data;
+};
+
+HashTable.prototype.Get = function(x, y) {
+    var pos = x * Math.pow(2, 6) + y;
+    return this.table[pos];
+};
 var FogOfWar = function(game) {
 
     this.fogCanvas = document.getElementById("FogOfWar");
@@ -613,7 +642,7 @@ Maze.prototype.Draw = function(context, level) {
         for (var y = 0; y < this.params.height; y++) {
             //game.bodies.push(this.data[x][y]); //
             this.data[x][y].Draw(context);
-            level.grid.push(this.data[x][y]);
+            level.grid.Put(this.data[x][y]);
         }
     }
     //context.stroke();
@@ -687,6 +716,10 @@ Player.prototype.Collide = function(item) {
 };
 
 var Wall = function(params, x, y) {
+    this.grid = {
+        x: x,
+        y: y
+    };
     this.params = params;
     this.visited = false;
     this.up = false;
@@ -748,7 +781,7 @@ var Level = function() {
         enemies: 10
     };
 
-    this.grid = [];
+    this.grid = new HashTable();
 };
 
 Level.prototype = Scene;

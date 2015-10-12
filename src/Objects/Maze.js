@@ -164,7 +164,7 @@ Maze.prototype.Draw = function(context, level) {
         for (var y = 0; y < this.params.height; y++) {
             //game.bodies.push(this.data[x][y]); //
             this.data[x][y].Draw(context);
-            level.grid.push(this.data[x][y]);
+            level.grid.Put(this.data[x][y]);
         }
     }
     //context.stroke();

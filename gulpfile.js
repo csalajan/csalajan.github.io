@@ -9,6 +9,7 @@ gulp.task('default', ['Scripts']);
 
 gulp.task('Scripts', function() {
     gulp.src([
+        './src/Core/*.js',
         './src/system/*.js',
         './src/Objects/*.js',
         './src/Scenes/*.js',

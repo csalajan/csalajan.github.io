@@ -10,7 +10,7 @@ var Level = function() {
         enemies: 10
     };
 
-    this.grid = [];
+    this.grid = new HashTable();
 };
 
 Level.prototype = Scene;

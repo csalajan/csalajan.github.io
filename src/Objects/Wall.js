@@ -1,4 +1,8 @@
 var Wall = function(params, x, y) {
+    this.grid = {
+        x: x,
+        y: y
+    };
     this.params = params;
     this.visited = false;
     this.up = false;
