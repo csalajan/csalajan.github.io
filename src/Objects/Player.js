@@ -6,16 +6,16 @@ var Player = function(game) {
     this.eley = document.getElementById('y');
 
     this.center = {
-        x: 5,
-        y: 5
+        x: 8,
+        y: 8
     };
 
     this.size = {
-        x: 6,
-        y: 6
+        x: 14,
+        y: 14
     };
 
-    this.speed = 2;
+    this.speed = 16;
 
     this.keyboarder = new Keyboarder();
 
@@ -37,17 +37,17 @@ Player.prototype.Update = function() {
         x: this.center.x,
         y: this.center.y
     };
-
-    if (this.keyboarder.isDown(this.keyboarder.KEYS.UP)) {
+    var grid = this.GridPos();
+    if (this.keyboarder.isDown(this.keyboarder.KEYS.UP) && grid.up) {
         newCenter.y = this.center.y - this.speed;
         this.facing = 'up';
-    } else if (this.keyboarder.isDown(this.keyboarder.KEYS.DOWN)) {
+    } else if (this.keyboarder.isDown(this.keyboarder.KEYS.DOWN) && grid.down) {
         newCenter.y = this.center.y + this.speed;
         this.facing= 'down';
-    } else if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT)) {
+    } else if (this.keyboarder.isDown(this.keyboarder.KEYS.LEFT) && grid.left) {
         newCenter.x = this.center.x - this.speed;
         this.facing = 'left';
-    } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT)) {
+    } else if (this.keyboarder.isDown(this.keyboarder.KEYS.RIGHT) && grid.right) {
         newCenter.x = this.center.x + this.speed;
         this.facing = 'right';
     }
@@ -56,8 +56,9 @@ Player.prototype.Update = function() {
         this.game.bodies.push(new Bullet(this));
     }
 
-    if (this.CheckCollision(newCenter)) {
+    if (this.game.Timer.Delta() > 50) {
         this.center = newCenter;
+        this.game.Timer.Last();
     }
 
     this.game.fogOfWar.Reveal(this.center);

@@ -3,6 +3,7 @@ var Timer = function() {
     this.timer;
     this.startTime;
     this.elapsed;
+    this.last = new Date().getTime();
 };
 
 Timer.prototype.Start = function() {
@@ -16,4 +17,12 @@ Timer.prototype.Start = function() {
 
 Timer.prototype.Stop = function() {
     clearInterval(this.timer);
+};
+
+Timer.prototype.Last = function() {
+  this.last = new Date().getTime();
+};
+
+Timer.prototype.Delta = function() {
+  return new Date().getTime() - this.last;
 };
