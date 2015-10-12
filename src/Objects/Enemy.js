@@ -2,6 +2,7 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
+    this.type = 'Enemy';
     //this.collisions[255] = 'bullet';
     this.directions = {
         0: 'right',
@@ -76,20 +77,19 @@ Enemy.prototype.newDirection = function(currentDirection) {
 
 };
 
-Enemy.prototype.Collide = function(item) {
-    switch(item) {
-        case 'wall':
-            // Do Nothing. Handled in Update
-            break;
-        case 'exit':
-            // Win Condition
-            break;
-        case 'enemy':
-            // Death
-            break;
-        case 'bullet':
-
-            this.game.Destroy(this);
-            break;
+Enemy.prototype.Collide = function(collisions) {
+    if (Array.isArray(collisions)) {
+        collisions.forEach(function (body) {
+            switch (body.type) {
+                case 'Bullet':
+                    if (body.owner instanceof Player) {
+                        this.game.Destroy(this);
+                    }
+                    break;
+                case 'Exit':
+                    this.game.Win();
+                    break;
+            }
+        }.bind(this));
     }
 };

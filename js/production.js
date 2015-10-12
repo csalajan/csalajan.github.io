@@ -94,7 +94,7 @@ var GameObject = {
 
         return filtered;
     },
-    Collide: function(value) {
+    Collide: function(collisions) {
 
     },
     GridPos: function() {
@@ -217,11 +217,13 @@ Block.prototype.Draw = function(context) {
     context.fillRect(this.center.x - this.size.x /2, this.center.y - this.size.y / 2, this.size.x, this.size.y);
 };
 var Bullet = function(owner) {
+    this.owner = owner;
     this.game = owner.game;
     this.direction = owner.facing;
     this.center = owner.center;
     this.velocity = 3;
     this.collisions[255] = 'wall';
+    this.type = 'Bullet';
     if (owner instanceof Player) {
         this.color = "red";
     } else {
@@ -377,6 +379,7 @@ var Enemy = function(game) {
     this.game = game;
     this.color = "#0022CC";
     this.facing = 'right';
+    this.type = 'Enemy';
     //this.collisions[255] = 'bullet';
     this.directions = {
         0: 'right',
@@ -451,26 +454,26 @@ Enemy.prototype.newDirection = function(currentDirection) {
 
 };
 
-Enemy.prototype.Collide = function(item) {
-    switch(item) {
-        case 'wall':
-            // Do Nothing. Handled in Update
-            break;
-        case 'exit':
-            // Win Condition
-            break;
-        case 'enemy':
-            // Death
-            break;
-        case 'bullet':
-
-            this.game.Destroy(this);
-            break;
+Enemy.prototype.Collide = function(collisions) {
+    if (Array.isArray(collisions)) {
+        collisions.forEach(function (body) {
+            switch (body.type) {
+                case 'Bullet':
+                    if (body.owner instanceof Player) {
+                        this.game.Destroy(this);
+                    }
+                    break;
+                case 'Exit':
+                    this.game.Win();
+                    break;
+            }
+        }.bind(this));
     }
 };
 var Exit = function(game) {
     this.game = game;
     this.color = "#00FF00";
+    this.type = 'Exit';
 
     this.center = {
         x: game.canvas.width - 5,
@@ -488,7 +491,7 @@ Exit.prototype = Object.create(GameObject);
 
 Exit.prototype.Update = function() {
     this.game.fogOfWar.Reveal(this.center);
-}
+};
 
 /**
  * Created by Craig on 10/7/2015.
@@ -668,6 +671,7 @@ var Player = function(game) {
     this.facing = 'right';
     this.elex = document.getElementById('x');
     this.eley = document.getElementById('y');
+    this.type = 'Player';
 
     this.center = {
         x: 8,
@@ -728,18 +732,27 @@ Player.prototype.Update = function() {
     this.game.fogOfWar.Reveal(this.center);
 };
 
-Player.prototype.Collide = function(item) {
-    switch(item) {
-        case 'wall':
-            // Do Nothing. Handled in Update
-            break;
-        case 'exit':
-            // Win Condition
-            break;
-        case 'enemy':
-            // Death
-            break;
-    }
+Player.prototype.Collide = function(collisions) {
+    collisions.forEach(function(body) {
+        switch(body.type) {
+            case 'Enemy':
+                this.Die();
+                break;
+            case 'Bullet':
+                if (body.owner instanceof Enemy) {
+                    this.Die();
+                }
+                break;
+            case 'Exit':
+                this.game.Win();
+                break;
+        }
+    }.bind(this));
+};
+
+Player.prototype.Die = function() {
+    alert('You have died!');
+    this.game.Destroy(this);
 };
 
 var Wall = function(params, x, y) {
@@ -926,6 +939,7 @@ Game.prototype.MainMenu = function() {
 Game.prototype.Update = function() {
     this.fogOfWar.Init();
     this.bodies.forEach(function(body) {
+        body.Collide(this.IsColliding(body));
         body.Clear(this.context);
         body.Update();
     }.bind(this));
@@ -944,5 +958,19 @@ Game.prototype.Win = function() {
 
 Game.prototype.Destroy = function(object) {
     this.bodies.splice(this.bodies.indexOf(object), 1);
+};
+
+Game.prototype.IsColliding = function(body) {
+    return this.bodies.filter(function(a) {
+        return this.Colliding(body, a);
+    }.bind(this));
+};
+
+Game.prototype.Colliding = function(a, b) {
+    return !(a === b ||
+    a.center.x + a.size.x / 2 < b.center.x - b.size.x / 2 ||
+    a.center.y + a.size.y / 2 < b.center.y - b.size.y / 2 ||
+    a.center.x - a.size.x / 2 > b.center.x + b.size.x / 2 ||
+    a.center.y - a.size.y / 2 > b.center.y + b.size.y / 2);
 };
 

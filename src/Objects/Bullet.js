@@ -1,9 +1,11 @@
 var Bullet = function(owner) {
+    this.owner = owner;
     this.game = owner.game;
     this.direction = owner.facing;
     this.center = owner.center;
     this.velocity = 3;
     this.collisions[255] = 'wall';
+    this.type = 'Bullet';
     if (owner instanceof Player) {
         this.color = "red";
     } else {
