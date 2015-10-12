@@ -42,7 +42,7 @@ var GameObject = {
 
         return filtered;
     },
-    Collide: function(value) {
+    Collide: function(collisions) {
 
     },
     GridPos: function() {

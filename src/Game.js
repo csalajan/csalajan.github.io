@@ -80,6 +80,7 @@ Game.prototype.MainMenu = function() {
 Game.prototype.Update = function() {
     this.fogOfWar.Init();
     this.bodies.forEach(function(body) {
+        body.Collide(this.IsColliding(body));
         body.Clear(this.context);
         body.Update();
     }.bind(this));
@@ -98,5 +99,19 @@ Game.prototype.Win = function() {
 
 Game.prototype.Destroy = function(object) {
     this.bodies.splice(this.bodies.indexOf(object), 1);
+};
+
+Game.prototype.IsColliding = function(body) {
+    return this.bodies.filter(function(a) {
+        return this.Colliding(body, a);
+    }.bind(this));
+};
+
+Game.prototype.Colliding = function(a, b) {
+    return !(a === b ||
+    a.center.x + a.size.x / 2 < b.center.x - b.size.x / 2 ||
+    a.center.y + a.size.y / 2 < b.center.y - b.size.y / 2 ||
+    a.center.x - a.size.x / 2 > b.center.x + b.size.x / 2 ||
+    a.center.y - a.size.y / 2 > b.center.y + b.size.y / 2);
 };
 

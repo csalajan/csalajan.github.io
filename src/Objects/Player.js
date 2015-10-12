@@ -4,6 +4,7 @@ var Player = function(game) {
     this.facing = 'right';
     this.elex = document.getElementById('x');
     this.eley = document.getElementById('y');
+    this.type = 'Player';
 
     this.center = {
         x: 8,
@@ -64,16 +65,25 @@ Player.prototype.Update = function() {
     this.game.fogOfWar.Reveal(this.center);
 };
 
-Player.prototype.Collide = function(item) {
-    switch(item) {
-        case 'wall':
-            // Do Nothing. Handled in Update
-            break;
-        case 'exit':
-            // Win Condition
-            break;
-        case 'enemy':
-            // Death
-            break;
-    }
+Player.prototype.Collide = function(collisions) {
+    collisions.forEach(function(body) {
+        switch(body.type) {
+            case 'Enemy':
+                this.Die();
+                break;
+            case 'Bullet':
+                if (body.owner instanceof Enemy) {
+                    this.Die();
+                }
+                break;
+            case 'Exit':
+                this.game.Win();
+                break;
+        }
+    }.bind(this));
+};
+
+Player.prototype.Die = function() {
+    alert('You have died!');
+    this.game.Destroy(this);
 };
