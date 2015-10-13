@@ -380,12 +380,20 @@ var Enemy = function(game) {
     this.color = "#0022CC";
     this.facing = 'right';
     this.type = 'Enemy';
+    this.timer = new Timer();
     //this.collisions[255] = 'bullet';
     this.directions = {
         0: 'right',
         1: 'up',
         2: 'left',
         3: 'down'
+    };
+
+    this.oDir = {
+        up: 'down',
+        down: 'up',
+        left: 'right',
+        right: 'left'
     };
 
     this.center = {
@@ -418,37 +426,26 @@ Enemy.prototype.Update = function() {
         y: this.center.y
     };
     var grid = this.GridPos();
+    this.facing = this.newDirection(grid);
     switch (this.facing) {    
         case 'right':
-            if(grid.right){
-                newCenter.x += 16;
-            }
-            else
-                this.facing = this.newDirection();
+            newCenter.x += 16;
             break;
         case 'up':
-            if(grid.up){
-                newCenter.y -= 16;
-            }
-            else
-                this.facing = this.newDirection();
+            newCenter.y -= 16;
             break;
         case 'left':
-            if(grid.left){
-                newCenter.x -=16;
-            }
-            else
-                this.facing = this.newDirection();
+            newCenter.x -=16;
             break;
         case 'down':
-            if(grid.down){
-                newCenter.y +=16;
-            }
-            else
-                this.facing = this.newDirection();    
+            newCenter.y +=16;
             break;
     }
-    this.center = newCenter;
+
+    if (this.timer.Delta() > 50) {
+        this.center = newCenter;
+        this.timer.Last();
+    }
     /*
     if (this.game.Timer.Delta() > 50 && this.CheckCollision(newCenter)) {
         this.center = newCenter;
@@ -463,12 +460,22 @@ Enemy.prototype.Update = function() {
     }
 };
 
-Enemy.prototype.newDirection = function(currentDirection) {
-    var x = Math.floor(Math.random() * 4);
-    var direction = this.directions[x];
-    if (direction == currentDirection) {
-        return this.directions[(x++) % 4];
+Enemy.prototype.newDirection = function(gridItem) {
+    var directions = [];
+    var direction;
+    if (gridItem.up) directions.push('up');
+    if (gridItem.down) directions.push('down');
+    if (gridItem.left) directions.push('left');
+    if (gridItem.right) directions.push('right');
+
+    var x = Math.floor(Math.random() * (directions.length));
+    
+    if (directions[x] == this.oDir[this.facing] && directions.length > 1) {
+        direction = this.newDirection(gridItem);
+    } else {
+        direction = directions[x];
     }
+
     return direction;
 
 };
@@ -483,7 +490,7 @@ Enemy.prototype.Collide = function(collisions) {
                     }
                     break;
                 case 'Exit':
-                    this.game.Win();
+                    //this.game.Win();
                     break;
             }
         }.bind(this));
@@ -691,18 +698,19 @@ var Player = function(game) {
     this.elex = document.getElementById('x');
     this.eley = document.getElementById('y');
     this.type = 'Player';
+    this.timer = new Timer();
 
     this.center = {
-        x: 8,
-        y: 8
+        x: this.game.Level.params.scale / 2,
+        y: this.game.Level.params.scale / 2
     };
 
     this.size = {
-        x: 14,
-        y: 14
+        x: this.game.Level.params.scale - 2,
+        y: this.game.Level.params.scale - 2
     };
 
-    this.speed = 16;
+    this.speed = this.game.Level.params.scale;
 
     this.keyboarder = new Keyboarder();
 
@@ -743,9 +751,9 @@ Player.prototype.Update = function() {
         this.game.bodies.push(new Bullet(this));
     }
 
-    if (this.game.Timer.Delta() > 50) {
+    if (this.timer.Delta() > 50) {
         this.center = newCenter;
-        this.game.Timer.Last();
+        this.timer.Last();
     }
 
     this.game.fogOfWar.Reveal(this.center);
@@ -837,7 +845,7 @@ var Level = function() {
         reconnect:0,
         deadEnd: 0,
         scale: 16,
-        enemies: 10
+        enemies: 1
     };
 
     this.grid = new HashTable();

@@ -5,18 +5,19 @@ var Player = function(game) {
     this.elex = document.getElementById('x');
     this.eley = document.getElementById('y');
     this.type = 'Player';
+    this.timer = new Timer();
 
     this.center = {
-        x: 8,
-        y: 8
+        x: this.game.Level.params.scale / 2,
+        y: this.game.Level.params.scale / 2
     };
 
     this.size = {
-        x: 14,
-        y: 14
+        x: this.game.Level.params.scale - 2,
+        y: this.game.Level.params.scale - 2
     };
 
-    this.speed = 16;
+    this.speed = this.game.Level.params.scale;
 
     this.keyboarder = new Keyboarder();
 
@@ -57,9 +58,9 @@ Player.prototype.Update = function() {
         this.game.bodies.push(new Bullet(this));
     }
 
-    if (this.game.Timer.Delta() > 50) {
+    if (this.timer.Delta() > 50) {
         this.center = newCenter;
-        this.game.Timer.Last();
+        this.timer.Last();
     }
 
     this.game.fogOfWar.Reveal(this.center);

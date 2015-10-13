@@ -7,7 +7,7 @@ var Level = function() {
         reconnect:0,
         deadEnd: 0,
         scale: 16,
-        enemies: 10
+        enemies: 1
     };
 
     this.grid = new HashTable();
